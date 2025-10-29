@@ -1,0 +1,72 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+
+dotenv.config();
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
+
+app.use(express.json());
+
+// Schema and Model
+const studentSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true },
+  semester: { type: Number, required: true, min: 1 }
+}, { timestamps: true });
+
+const Student = mongoose.model("Student", studentSchema);
+
+// Routes
+app.get("/", (_req, res) => {
+  res.send("Welcome to Students CRUD API!");
+});
+
+// CREATE
+app.post("/students", async (req, res) => {
+    const { name, email, semester } = req.body;
+    const student = await Student.create({ name, email, semester });
+    res.status(201).json(student);
+});
+
+// READ ALL
+app.get("/students", async (_req, res) => {
+  const students = await Student.find().sort({ createdAt: -1 });
+  res.json(students);
+});
+
+// UPDATE
+app.put("/students/:id", async (req, res) => {
+  try {
+    const { name, email, semester } = req.body;
+    const updated = await Student.findByIdAndUpdate(
+      req.params.id,
+      { name, email, semester },
+      { new: true, runValidators: true }
+    );
+    if (!updated) return res.status(404).json({ error: "Student not found" });
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// DELETE
+app.delete("/students/:id", async (req, res) => {
+  try {
+    const deleted = await Student.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "Student not found" });
+    res.json({ message: "Deleted successfully", student: deleted });
+  } catch {
+    res.status(400).json({ error: "Invalid ID" });
+  }
+});
+
+// Connect to MongoDB and Start Server
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    app.listen(PORT, () => console.log(Server running on http://localhost:${PORT}));
+  });
