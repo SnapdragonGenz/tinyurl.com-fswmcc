@@ -1,0 +1,43 @@
+import React from 'react';
+function UserDetails(props) {
+  return (
+    <div style={styles.card}>
+      <h2>User Details</h2>
+      <p><strong>Name:</strong> {props.name}</p>
+      <p><strong>Age:</strong> {props.age}</p>
+      <p><strong>Email:</strong> {props.email}</p>
+    </div>
+  );
+}
+
+// Simple inline styling
+const styles = {
+  card: {
+    border: "2px solid #4CAF50",
+    padding: "15px",
+    borderRadius: "10px",
+    width: "250px",
+    margin: "20px auto",
+    textAlign: "center",
+    fontFamily: "Arial, sans-serif",
+  }
+};
+
+export default UserDetails;
+
+// src/App.js
+import React from 'react';
+import UserDetails from './UserDetails';
+
+function App() {
+  return (
+    <div>
+      <h1 style={{ textAlign: "center", color: "#4CAF50" }}>React Props Example</h1>
+      
+      {/* Passing props to UserDetails component */}
+      <UserDetails name="John Doe" age={25} email="john.doe@example.com" />
+      <UserDetails name="Jane Smith" age={30} email="jane.smith@example.com" />
+    </div>
+  );
+}
+
