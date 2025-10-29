@@ -1,0 +1,67 @@
+•	mkdir products-api
+•	cd products-api
+•	npm init -y
+•	npm install express
+
+
+// server.js
+const express = require("express");
+const app = express();
+const PORT = 3000;
+
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// Product data
+let products = [
+  { id: 1, name: "Notebook", price: 99.0, category: "Stationery", inStock: true },
+  { id: 2, name: "Wireless Mouse", price: 799.0, category: "Electronics", inStock: true },
+  { id: 3, name: "Water Bottle", price: 299.0, category: "Lifestyle", inStock: false }
+];
+
+// Home route
+app.get("/", (req, res) => {
+  res.send("✅ Products API is running. Try GET /products");
+});
+
+// GET all products
+app.get("/products", (req, res) => {
+  res.json(products);
+});
+
+// GET product by ID
+app.get("/products/:id", (req, res) => {
+  const product = products.find(p => p.id === Number(req.params.id));
+  if (!product) return res.status(404).json({ message: "Product not found" });
+  res.json(product);
+});
+
+// POST create a new product
+app.post("/products", (req, res) => {
+  const { name, price, category, inStock } = req.body;
+  const newProduct = { id: products.length + 1, name, price, category, inStock };
+  products.push(newProduct);
+  res.status(201).json(newProduct);
+});
+
+// PUT update a product
+app.put("/products/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const product = products.find(p => p.id === id);
+  if (!product) return res.status(404).json({ message: "Product not found" });
+  Object.assign(product, req.body);
+  res.json(product);
+});
+
+// DELETE a product
+app.delete("/products/:id", (req, res) => {
+  const id = Number(req.params.id);
+  products = products.filter(p => p.id !== id);
+  res.status(204).send();
+});
+
+// Start the server
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+Step 2: Run the server using:
+•	node server.js
