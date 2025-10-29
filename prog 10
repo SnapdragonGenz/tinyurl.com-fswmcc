@@ -1,3 +1,9 @@
+npx create-react-app user-details-app
+
+cd user-details-app
+
+npm start
+
 import React from 'react';
 function UserDetails(props) {
   return (
