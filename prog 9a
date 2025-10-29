@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AJAX JSON Example</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    .card {
+      border: 1px solid #ccc; padding: 10px; margin: 10px 0;
+      border-radius: 5px; background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Fetch Users using AJAX</h2>
+  <button id="btn">Fetch Users</button>
+  <div id="output"></div>
+
+  <script>
+    $("#btn").click(function(){
+      $.getJSON("https://jsonplaceholder.typicode.com/users", function(users){
+        let data = "";
+        $.each(users, function(i, user){
+          data += `
+            <div class="card">
+              <h3>${user.name} (${user.username})</h3>
+              <p>Email: ${user.email}</p>
+              <p>Phone: ${user.phone}</p>
+              <p>Company: ${user.company.name}</p>
+            </div>`;
+        });
+        $("#output").html(data);
+      }).fail(function(){
+        $("#output").html("<p style='color:red;'>Error fetching data.</p>");
+      });
+    });
+  </script>
+</body>
+</html>
